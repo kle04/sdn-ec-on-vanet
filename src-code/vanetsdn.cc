@@ -12,7 +12,7 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
-#include "myappsdn.h" // Include class MyApp từ file riêng
+#include "myapp.h" // Include class MyApp từ file riêng
 
 using namespace ns3;
 

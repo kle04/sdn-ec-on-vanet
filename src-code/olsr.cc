@@ -122,7 +122,7 @@ void stopMover()
 int main(int argc, char* argv[])
 {
     // Mở file CSV để ghi kết quả
-    csvFile.open("simulation_results_olsr_allflows.csv");
+    csvFile.open("simulation_results_olsr.csv");
     csvFile << "Time,Throughput,Avg Delay,PDR\n"; // Tiêu đề cột
 
     // Thiết lập các tham số mô phỏng
@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     Address sinkAddress(InetSocketAddress(ifcont.GetAddress(9), port));
     
     Ptr<MyApp> app = CreateObject<MyApp>();
-    app->Setup(ns3UdpSocket, sinkAddress, 1040, 100000, DataRate("250Kbps"));
+    app->Setup(ns3UdpSocket, sinkAddress, 1024, 3000, DataRate("250Kbps"));
     c.Get(0)->AddApplication(app);
     
     app->SetStartTime(Seconds(1.));

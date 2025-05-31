@@ -121,7 +121,7 @@ void stopMover()
 
 int main(int argc, char* argv[])
 {
-    csvFile.open("simulation_results_aodv_allflows.csv");
+    csvFile.open("simulation_results_aodv.csv");
     csvFile << "Time,Throughput,Avg Delay,PDR\n"; // Tiêu đề cột
 
     bool enableFlowMonitor = true;
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
     Address sinkAddress(InetSocketAddress(ifcont.GetAddress(9), port));
     
     Ptr<MyApp> app = CreateObject<MyApp>();
-    app->Setup(ns3UdpSocket, sinkAddress, 1040, 50000, DataRate("150Kbps")); // 50000 packets
+    app->Setup(ns3UdpSocket, sinkAddress, 1024, 3000, DataRate("150Kbps")); // 50000 packets
     c.Get(0)->AddApplication(app);
     
     app->SetStartTime(Seconds(1.));
