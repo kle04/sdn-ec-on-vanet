@@ -168,7 +168,7 @@ int
 main (int argc, char *argv[])
 {
   // Mở file CSV để lưu kết quả - đổi tên file đầu ra để phản ánh cấu hình 2 RSU
-  csvFile.open("simulation_results_sdn_vanet_2rsu.csv");
+  csvFile.open("simulation_results_sdn_vanet.csv");
   csvFile << "Time,Throughput,Avg Delay,PDR\n"; // Tiêu đề cột
 
   // Enable logging
@@ -189,14 +189,14 @@ main (int argc, char *argv[])
 
   // Create nodes - giảm số lượng node phương tiện để giảm tải
   NodeContainer vehNodes;
-  vehNodes.Create(50);  // Giảm từ 50 xuống 40 xe để giảm tải
+  vehNodes.Create(40);  // Giảm từ 50 xuống 40 xe để giảm tải
   NodeContainer rsuNodes;
-  rsuNodes.Create(2);   // Giảm từ 4 xuống 2 RSU theo yêu cầu
+  rsuNodes.Create(2);   // 2 RSU
   NodeContainer switchNodes;
   switchNodes.Create(1);     // 1 switch OpenFlow
   NodeContainer controllerNodes;
   controllerNodes.Create(1); // 1 controller SDN
-  Ptr<Node> serverNode = CreateObject<Node>();     // 1 server trung tâm
+  Ptr<Node> serverNode = CreateObject<Node>();  // 1 server trung tâm
 
   // Cài đặt giao thức Internet (TCP/IP) cho các node trừ switch
   InternetStackHelper internet;
@@ -233,7 +233,7 @@ main (int argc, char *argv[])
   
   std::vector<Vector> rsuPositions = {rsu0Pos, rsu1Pos};
   
-  for (uint32_t i = 0; i < 40; i++) {  // 40 xe thay vì 50 xe
+  for (uint32_t i = 0; i < 40; i++) {  // 40 xe
       // Chọn một RSU để tạo xe gần đó
       int selectedRsu = rsuSelector.GetInteger(0, 1); // Chỉ chọn từ 2 RSU (0 hoặc 1)
       Vector rsuPos = rsuPositions[selectedRsu];
@@ -394,12 +394,12 @@ main (int argc, char *argv[])
   serverApps.Stop(Seconds(99.0));
 
   // Thiết lập các ứng dụng gửi dữ liệu từ xe đến server - giảm số lượng
-  for (uint32_t i = 0; i < 10; i++) {  // Giảm từ 15 xuống 10 xe gửi đến server
+  for (uint32_t i = 0; i < 10; i++) {  // 10 flows
     Ptr<Socket> ns3UdpSocket = Socket::CreateSocket(vehNodes.Get(i), UdpSocketFactory::GetTypeId());
     Address serverAddress(InetSocketAddress(serverInterface.GetAddress(0), port));
     
     Ptr<MyApp> app = CreateObject<MyApp>();
-    app->Setup(ns3UdpSocket, serverAddress, 1024, 5000, DataRate("250Kbps")); // 250Kbps theo yêu cầu
+    app->Setup(ns3UdpSocket, serverAddress, 1024, 3000, DataRate("250Kbps"));
     vehNodes.Get(i)->AddApplication(app);
     
     app->SetStartTime(Seconds(2.0 + i * 0.1));
@@ -476,7 +476,7 @@ main (int argc, char *argv[])
   }
 
   // Lên lịch ghi thông số mạng
-  Simulator::Schedule(Seconds(5.0), &LogMetricsEverySecond);
+  Simulator::Schedule(Seconds(1.0), &LogMetricsEverySecond);
 
   // Lên lịch dừng di chuyển sau 60 giây theo yêu cầu
   Simulator::Schedule(Seconds(60.0), &stopMover);

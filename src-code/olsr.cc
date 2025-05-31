@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
     // Tạo các node
     NS_LOG_INFO("Create nodes.");
     NodeContainer c;
-    c.Create(50); // Tạo 50 nút
+    c.Create(40); // Tạo 40 nút
 
     // Cấu hình Wifi
     WifiHelper wifi;
@@ -204,29 +204,27 @@ int main(int argc, char* argv[])
     app->SetStartTime(Seconds(1.));
     app->SetStopTime(Seconds(60.));
     
-    std::cout << "Direct flow setup: Node 0 -> Node 9" << std::endl;
-    
     // Tạo flows giữa các node gần nhau
     UniformRandomVariable random;
     random.SetStream(10);
     
     // Tạo thêm các kết nối giữa các node để có nhiều flows
-    for (uint32_t i = 1; i < 20; i++) { // Giới hạn ở 20 node gửi để tránh quá tải
+    for (uint32_t i = 1; i < 10; i++) { // Giới hạn ở 20 node gửi để tránh quá tải
         // Chọn ngẫu nhiên một node đích khác với node hiện tại
         uint32_t dest;
         do {
-            dest = random.GetInteger(0, 49);
+            dest = random.GetInteger(0, 39);
         } while (dest == i);
         
         Ptr<Socket> socket = Socket::CreateSocket(c.Get(i), UdpSocketFactory::GetTypeId());
         Address destAddress(InetSocketAddress(ifcont.GetAddress(dest), port));
         
         Ptr<MyApp> newApp = CreateObject<MyApp>();
-        newApp->Setup(socket, destAddress, 512, 10000, DataRate("250Kbps"));
+        newApp->Setup(socket, destAddress, 512, 3000, DataRate("250Kbps"));
         c.Get(i)->AddApplication(newApp);
         
-        // Phân bố thời gian bắt đầu để tránh quá tải
-        newApp->SetStartTime(Seconds(5.0 + 0.1 * i));
+        // Bắt đầu thu thông số
+        newApp->SetStartTime(Seconds(1.0 + 0.1 * i)); 
         newApp->SetStopTime(Seconds(60.0));
         
         std::cout << "Flow setup: Node " << i << " -> Node " << dest << std::endl;
@@ -243,7 +241,7 @@ int main(int argc, char* argv[])
     randomY.SetStream(2);
 
     // Tạo vị trí ban đầu ngẫu nhiên cho các node
-    for (uint32_t i = 0; i < 50; i++) {
+    for (uint32_t i = 0; i < 40; i++) {
         positionAlloc->Add(Vector(randomX.GetValue(0, 500), randomY.GetValue(0, 500), 0));//phạm vi mô phỏng là 500x500
     }
 
@@ -256,7 +254,7 @@ int main(int argc, char* argv[])
     UniformRandomVariable randomAngle; // Góc ngẫu nhiên
     randomAngle.SetStream(3);
 
-    for (uint32_t i = 0; i < 50; i++) {
+    for (uint32_t i = 0; i < 40; i++) {
         Ptr<ConstantVelocityMobilityModel> moverModel = c.Get(i)->GetObject<ConstantVelocityMobilityModel>();
         
         // node 0 đứng yên

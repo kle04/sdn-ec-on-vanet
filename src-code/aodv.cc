@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
     Address sinkAddress(InetSocketAddress(ifcont.GetAddress(9), port));
     
     Ptr<MyApp> app = CreateObject<MyApp>();
-    app->Setup(ns3UdpSocket, sinkAddress, 1040, 50000, DataRate("150Kbps")); // Giảm từ 100000 packets xuống 50000
+    app->Setup(ns3UdpSocket, sinkAddress, 1040, 50000, DataRate("150Kbps")); // 50000 packets
     c.Get(0)->AddApplication(app);
     
     app->SetStartTime(Seconds(1.));
@@ -199,8 +199,8 @@ int main(int argc, char* argv[])
     UniformRandomVariable random;
     random.SetStream(10);
     
-    // Tạo thêm các kết nối giữa các node để có nhiều flows - giảm số lượng flows
-    for (uint32_t i = 1; i < 10; i++) { // Giảm từ 20 xuống 10 flows để tránh quá tải
+    // Tạo thêm các kết nối giữa các node để có nhiều flows
+    for (uint32_t i = 1; i < 10; i++) { // 10 flows
         // Chọn ngẫu nhiên một node đích khác với node hiện tại
         uint32_t dest;
         do {
@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
         Address destAddress(InetSocketAddress(ifcont.GetAddress(dest), port));
         
         Ptr<MyApp> newApp = CreateObject<MyApp>();
-        newApp->Setup(socket, destAddress, 512, 3000, DataRate("100Kbps")); // Giảm thêm packet count
+        newApp->Setup(socket, destAddress, 512, 3000, DataRate("250Kbps"));
         c.Get(i)->AddApplication(newApp);
         
         // Phân bố thời gian bắt đầu để tránh quá tải

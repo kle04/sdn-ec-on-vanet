@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Đọc dữ liệu từ file CSV
-file_name = "simulation_results_olsr.csv"
+file_name = "Result/simulation_results_olsr.csv"
 data = pd.read_csv(file_name)
 
 # Xử lý dữ liệu
