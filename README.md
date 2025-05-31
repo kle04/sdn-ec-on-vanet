@@ -56,5 +56,9 @@ This repository contains the final course project for the Computer Networking De
 - [MedHocNet 2014 - Towards Software Defined VANET](https://doi.org/10.1109/MedHocNet.2014.6849111)
 - Journal of Electrical Systems, 2024 – Emerging trends in SDN-VANET
 - [Vanet simulators: an updated review](https://doi.org/10.1186/s13173-021-00113-x)
+- World Health Organization, “Global status report on road safety 2018,” World Health Organization,
+Tech. Rep., 2018.
+- K. Gaur and J. Grover, “Exploring vanet using edge computing and sdn,” in 2019 Second International
+Conference on Advanced Computational and Communication Paradigms (ICACCP), 2019, pp. 1–4.
 
 > See `/docs` folder for full reports and diagrams.
