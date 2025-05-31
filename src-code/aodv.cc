@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
     // Tạo các node
     NS_LOG_INFO("Create nodes.");
     NodeContainer c;
-    c.Create(50); // Tạo 50 nút
+    c.Create(40); // Tạo 40 nút
 
     // Cấu hình Wifi
     WifiHelper wifi;
@@ -188,35 +188,34 @@ int main(int argc, char* argv[])
     Address sinkAddress(InetSocketAddress(ifcont.GetAddress(9), port));
     
     Ptr<MyApp> app = CreateObject<MyApp>();
-    app->Setup(ns3UdpSocket, sinkAddress, 1040, 100000, DataRate("250Kbps"));
+    app->Setup(ns3UdpSocket, sinkAddress, 1040, 50000, DataRate("150Kbps")); // Giảm từ 100000 packets xuống 50000
     c.Get(0)->AddApplication(app);
     
     app->SetStartTime(Seconds(1.));
     app->SetStopTime(Seconds(60.));
     
-    std::cout << "Direct flow setup: Node 0 -> Node 9" << std::endl;
     
-    // Tạo flows giữa các node gần nhau
+    // Tạo thêm các kết nối giữa các node để có nhiều flows
     UniformRandomVariable random;
     random.SetStream(10);
     
-    // Tạo thêm các kết nối giữa các node để có nhiều flows
-    for (uint32_t i = 1; i < 20; i++) { // Giới hạn ở 20 node gửi để tránh quá tải
+    // Tạo thêm các kết nối giữa các node để có nhiều flows - giảm số lượng flows
+    for (uint32_t i = 1; i < 10; i++) { // Giảm từ 20 xuống 10 flows để tránh quá tải
         // Chọn ngẫu nhiên một node đích khác với node hiện tại
         uint32_t dest;
         do {
-            dest = random.GetInteger(0, 49);
+            dest = random.GetInteger(0, 39); // 40 node
         } while (dest == i);
         
         Ptr<Socket> socket = Socket::CreateSocket(c.Get(i), UdpSocketFactory::GetTypeId());
         Address destAddress(InetSocketAddress(ifcont.GetAddress(dest), port));
         
         Ptr<MyApp> newApp = CreateObject<MyApp>();
-        newApp->Setup(socket, destAddress, 512, 10000, DataRate("250Kbps"));
+        newApp->Setup(socket, destAddress, 512, 3000, DataRate("100Kbps")); // Giảm thêm packet count
         c.Get(i)->AddApplication(newApp);
         
         // Phân bố thời gian bắt đầu để tránh quá tải
-        newApp->SetStartTime(Seconds(5.0 + 0.1 * i));
+        newApp->SetStartTime(Seconds(10.0 + 1.0 * i)); // Tăng interval và delay start time hơn
         newApp->SetStopTime(Seconds(60.0));
         
         std::cout << "Flow setup: Node " << i << " -> Node " << dest << std::endl;
@@ -233,7 +232,7 @@ int main(int argc, char* argv[])
     randomY.SetStream(2);
 
     // Tạo vị trí ban đầu ngẫu nhiên cho các node
-    for (uint32_t i = 0; i < 50; i++) {
+    for (uint32_t i = 0; i < 40; i++) {
         positionAlloc->Add(Vector(randomX.GetValue(0, 500), randomY.GetValue(0, 500), 0));//phạm vi mô phỏng là 500x500
     }
 
@@ -246,7 +245,7 @@ int main(int argc, char* argv[])
     UniformRandomVariable randomAngle; // Góc ngẫu nhiên
     randomAngle.SetStream(3);
 
-    for (uint32_t i = 0; i < 50; i++) {
+    for (uint32_t i = 0; i < 40; i++) {
         Ptr<ConstantVelocityMobilityModel> moverModel = c.Get(i)->GetObject<ConstantVelocityMobilityModel>();
         
         // node 0 đứng yên
